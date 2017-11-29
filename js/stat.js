@@ -3,9 +3,11 @@
 window.renderStatistics = function (ctx, names, times) {
   var widthBlockResults = 420;
   var initialXBlockResults = 100;
+
   // тень для блока
   ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
   ctx.fillRect(110, 20, widthBlockResults, 270);
+
   // блок с рез-ми
   ctx.fillStyle = 'rgb(255, 255, 255)';
   ctx.fillRect(initialXBlockResults, 10, widthBlockResults, 270);
@@ -14,36 +16,61 @@ window.renderStatistics = function (ctx, names, times) {
   ctx.fillStyle = '#222222';
   ctx.font = '16px PT Mono';
   ctx.fillText('Ура вы победили!', 120, 40);
-  ctx.fillText('Список чемпионов:', 120, 60);
+  ctx.fillText('Список результатов:', 120, 60);
 
   var max = -1;
   var maxIndex = -1;
 
-  // поиск максимального времени среди всех результатов
-  for (var i = 0 ; i < times.length; i++) {
-    var time = times[i];
-    if (time > max) {
-      max = time;
-      maxIndex = i;
+  // функция поиска максимального числа в массиве
+  var findMaxInArray = function(arrayName) {
+    for (var i = 0 ; i < arrayName.length; i++) {
+      var number = arrayName[i];
+      if (number > max) {
+        max = number;
+        maxIndex = i;
+      }
     }
-  }
-  console.log('Максимальное время - ' + max + ', индекс в массиве - ' + maxIndex);
+    console.log('Максимальное время - ' + max);
+    return max;
+  };
+
+  // поиск максимального времени
+  findMaxInArray(times);
+
+  // сортировка по возрастанию
+  var sortNumbersInArray = function(arrayName) {
+    for (var i = 0; i <= arrayName.length - 2; i++) {
+      var minTime = arrayName[i];
+      for (var j = i + 1; j <= arrayName.length - 1; j++) {
+        if (arrayName[j] < minTime) {
+          minTime = arrayName[j];
+          var swap = arrayName[i];
+          arrayName[i] = minTime;
+          arrayName[j] = swap;
+        }
+      }
+    }
+    console.log(arrayName);
+    return arrayName;
+  };
+
+  // сортировка результатов по времени
+  sortNumbersInArray(times);
 
   var histogramHeight = 150;
   var step = histogramHeight / (max - 0);
-
   var barWidth = 40;
   var indent = (widthBlockResults / times.length - barWidth);
   var initialX = 120;
   var initialY = 90;
   var lineHeight = 20;
 
-  for(var i = 0; i < times.length; i++) {
+  // отрисовка гистограмм
+  for (var i = 0; i < times.length; i++) {
     if (names[i] === 'Вы') {
       ctx.fillStyle = 'rgba(255, 0, 0, 1)';
     } else {
       ctx.fillStyle = 'rgba(0, 0, 255, ' + Math.random() + ')';
-      console.log(ctx.fillStyle);
     }
     ctx.fillRect(initialX + (indent + barWidth) * i, initialY + histogramHeight, barWidth, -(times[i] * step));
     ctx.fillStyle = '#222222';
