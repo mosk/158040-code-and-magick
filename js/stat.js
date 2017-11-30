@@ -19,18 +19,15 @@ window.renderStatistics = function (ctx, names, times) {
   ctx.fillText('Список результатов:', 120, 60);
 
   var max = -1;
-  var maxIndex = -1;
 
   // функция поиска максимального числа в массиве
-  var findMaxInArray = function(arrayName) {
-    for (var i = 0 ; i < arrayName.length; i++) {
+  var findMaxInArray = function (arrayName) {
+    for (var i = 0; i < arrayName.length; i++) {
       var number = arrayName[i];
       if (number > max) {
         max = number;
-        maxIndex = i;
       }
     }
-    console.log('Максимальное время - ' + max);
     return max;
   };
 
@@ -38,19 +35,18 @@ window.renderStatistics = function (ctx, names, times) {
   findMaxInArray(times);
 
   // сортировка по возрастанию
-  var sortNumbersInArray = function(arrayName) {
+  var sortNumbersInArray = function (arrayName) {
     for (var i = 0; i <= arrayName.length - 2; i++) {
-      var minTime = arrayName[i];
+      var minNumber = arrayName[i];
       for (var j = i + 1; j <= arrayName.length - 1; j++) {
-        if (arrayName[j] < minTime) {
-          minTime = arrayName[j];
+        if (arrayName[j] < minNumber) {
+          minNumber = arrayName[j];
           var swap = arrayName[i];
-          arrayName[i] = minTime;
+          arrayName[i] = minNumber;
           arrayName[j] = swap;
         }
       }
     }
-    console.log(arrayName);
     return arrayName;
   };
 
@@ -78,4 +74,3 @@ window.renderStatistics = function (ctx, names, times) {
     ctx.fillText(times[i].toFixed(), initialX + (indent + barWidth) * i, initialY + histogramHeight - times[i] * step - lineHeight / 2);
   }
 };
-
