@@ -1,76 +1,75 @@
 'use strict';
 
 window.renderStatistics = function (ctx, names, times) {
-  var widthBlockResults = 420;
-  var initialXBlockResults = 100;
+  var WIDTH_BLOCK_RESULTS = 420;
+  var HEIGHT_BLOCK_RESULTS = 270;
+  var INITIAL_X_BLOCK_RESULTS = 100;
+  var INITIAL_Y_BLOCK_RESULTS = 10;
+  var OFFSET_X = 10;
+  var OFFSET_Y = 10;
+  var INITIAL_X = 120;
+  var INITIAL_Y = 90;
+  var LINE_HEIGHT = 20;
+  var BAR_WIDTH = 40;
+  var HISTOGRAM_HEIGHT = 150;
+  var INITIAL_X_TEXT = 120;
+  var INITIAL_Y_TEXT = 40;
 
-  // тень для блока
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-  ctx.fillRect(110, 20, widthBlockResults, 270);
+  var getRandomNumber = function (min, max) {
+    if (min === undefined) {
+      min = 0;
+    }
 
-  // блок с рез-ми
-  ctx.fillStyle = 'rgb(255, 255, 255)';
-  ctx.fillRect(initialXBlockResults, 10, widthBlockResults, 270);
+    if (max === undefined) {
+      max = 1;
+    }
 
-  // текст для блока
-  ctx.fillStyle = '#222222';
-  ctx.font = '16px PT Mono';
-  ctx.fillText('Ура вы победили!', 120, 40);
-  ctx.fillText('Список результатов:', 120, 60);
+    return Math.random() * (max - min) + min;
+  }
 
-  var max = -1;
+  var drawRectangle = function() {
+    for (var i = 0; i < times.length; i++) {
+      names[i] === 'Вы' ?
+        ctx.fillStyle = 'rgba(255, 0, 0, 1)' :
+        ctx.fillStyle = 'rgba(0, 0, 255, ' + getRandomNumber() + ')';
+      ctx.fillRect(INITIAL_X + (indent + BAR_WIDTH) * i, INITIAL_Y + HISTOGRAM_HEIGHT, BAR_WIDTH, -(times[i] * step));
+    }
+  }
 
-  // функция поиска максимального числа в массиве
-  var findMaxInArray = function (arrayName) {
+  var drawText = function() {
+    for (var i = 0; i < times.length; i++) {
+      ctx.fillText(names[i], INITIAL_X + (indent + BAR_WIDTH) * i, INITIAL_Y + HISTOGRAM_HEIGHT + LINE_HEIGHT);
+      ctx.fillText(times[i].toFixed(), INITIAL_X + (indent + BAR_WIDTH) * i, INITIAL_Y + HISTOGRAM_HEIGHT - times[i] * step - LINE_HEIGHT / 2);
+    }
+  }
+
+  var getMaxInArray = function (arrayName) {
+    var max = -1;
     for (var i = 0; i < arrayName.length; i++) {
       var number = arrayName[i];
       if (number > max) {
         max = number;
       }
     }
+
     return max;
   };
 
-  // поиск максимального времени
-  findMaxInArray(times);
+  var maxTime = getMaxInArray (times);
+  var step = HISTOGRAM_HEIGHT / maxTime;
+  var indent = (WIDTH_BLOCK_RESULTS / times.length - BAR_WIDTH);
 
-  // сортировка по возрастанию
-  var sortNumbersInArray = function (arrayName) {
-    for (var i = 0; i <= arrayName.length - 2; i++) {
-      var minNumber = arrayName[i];
-      for (var j = i + 1; j <= arrayName.length - 1; j++) {
-        if (arrayName[j] < minNumber) {
-          minNumber = arrayName[j];
-          var swap = arrayName[i];
-          arrayName[i] = minNumber;
-          arrayName[j] = swap;
-        }
-      }
-    }
-    return arrayName;
-  };
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+  ctx.fillRect(INITIAL_X_BLOCK_RESULTS + OFFSET_X, INITIAL_Y_BLOCK_RESULTS + OFFSET_Y, WIDTH_BLOCK_RESULTS, HEIGHT_BLOCK_RESULTS);
 
-  // сортировка результатов по времени
-  sortNumbersInArray(times);
+  ctx.fillStyle = 'rgb(255, 255, 255)';
+  ctx.fillRect(INITIAL_X_BLOCK_RESULTS, INITIAL_Y_BLOCK_RESULTS, WIDTH_BLOCK_RESULTS, HEIGHT_BLOCK_RESULTS);
 
-  var histogramHeight = 150;
-  var step = histogramHeight / (max - 0);
-  var barWidth = 40;
-  var indent = (widthBlockResults / times.length - barWidth);
-  var initialX = 120;
-  var initialY = 90;
-  var lineHeight = 20;
+  ctx.fillStyle = '#222222';
+  ctx.font = '16px PT Mono';
+  ctx.fillText('Ура вы победили!', INITIAL_X_TEXT, INITIAL_Y_TEXT);
+  ctx.fillText('Список результатов:', INITIAL_X_TEXT, INITIAL_Y_TEXT + LINE_HEIGHT);
 
-  // отрисовка гистограмм
-  for (var i = 0; i < times.length; i++) {
-    if (names[i] === 'Вы') {
-      ctx.fillStyle = 'rgba(255, 0, 0, 1)';
-    } else {
-      ctx.fillStyle = 'rgba(0, 0, 255, ' + Math.random() + ')';
-    }
-    ctx.fillRect(initialX + (indent + barWidth) * i, initialY + histogramHeight, barWidth, -(times[i] * step));
-    ctx.fillStyle = '#222222';
-    ctx.fillText(names[i], initialX + (indent + barWidth) * i, initialY + histogramHeight + lineHeight);
-    ctx.fillText(times[i].toFixed(), initialX + (indent + barWidth) * i, initialY + histogramHeight - times[i] * step - lineHeight / 2);
-  }
+  drawText();
+  drawRectangle();
 };
