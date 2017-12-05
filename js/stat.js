@@ -5,43 +5,36 @@ window.renderStatistics = function (ctx, names, times) {
   var HEIGHT_BLOCK_RESULTS = 270;
   var INITIAL_X_BLOCK_RESULTS = 100;
   var INITIAL_Y_BLOCK_RESULTS = 10;
-  var OFFSET_X = 10;
-  var OFFSET_Y = 10;
+  var OFFSET = 10;
+
   var INITIAL_X = 120;
   var INITIAL_Y = 90;
   var LINE_HEIGHT = 20;
   var BAR_WIDTH = 40;
   var HISTOGRAM_HEIGHT = 150;
+
   var INITIAL_X_TEXT = 120;
   var INITIAL_Y_TEXT = 40;
+  var FONT_STYLE = '16px PT Mono';
+  var FONT_COLOR = '#222222';
 
   var getRandomNumber = function (min, max) {
-    if (min === undefined) {
-      min = 0;
-    }
-
-    if (max === undefined) {
-      max = 1;
-    }
-
     return Math.random() * (max - min) + min;
-  }
+  };
 
-  var drawRectangle = function() {
-    for (var i = 0; i < times.length; i++) {
-      names[i] === 'Вы' ?
-        ctx.fillStyle = 'rgba(255, 0, 0, 1)' :
-        ctx.fillStyle = 'rgba(0, 0, 255, ' + getRandomNumber() + ')';
-      ctx.fillRect(INITIAL_X + (indent + BAR_WIDTH) * i, INITIAL_Y + HISTOGRAM_HEIGHT, BAR_WIDTH, -(times[i] * step));
-    }
-  }
+  var drawRect = function (initialX, initialY, width, height, rectColor, shadowOffsetX, shadowOffsetY, shadowColor) {
+    ctx.fillStyle = shadowColor;
+    ctx.fillRect(initialX + shadowOffsetX, initialY + shadowOffsetY, width, height);
 
-  var drawText = function() {
-    for (var i = 0; i < times.length; i++) {
-      ctx.fillText(names[i], INITIAL_X + (indent + BAR_WIDTH) * i, INITIAL_Y + HISTOGRAM_HEIGHT + LINE_HEIGHT);
-      ctx.fillText(times[i].toFixed(), INITIAL_X + (indent + BAR_WIDTH) * i, INITIAL_Y + HISTOGRAM_HEIGHT - times[i] * step - LINE_HEIGHT / 2);
-    }
-  }
+    ctx.fillStyle = rectColor;
+    ctx.fillRect(initialX, initialY, width, height);
+  };
+
+  var drawText = function (text, initialX, initialY, color, font) {
+    ctx.fillStyle = color;
+    ctx.font = font;
+    ctx.fillText(text, initialX, initialY);
+  };
 
   var getMaxInArray = function (arrayName) {
     var max = -1;
@@ -55,21 +48,23 @@ window.renderStatistics = function (ctx, names, times) {
     return max;
   };
 
-  var maxTime = getMaxInArray (times);
-  var step = HISTOGRAM_HEIGHT / maxTime;
-  var indent = (WIDTH_BLOCK_RESULTS / times.length - BAR_WIDTH);
+  var MAX_TIME = getMaxInArray(times);
+  var STEP = HISTOGRAM_HEIGHT / MAX_TIME;
+  var INDENT = (WIDTH_BLOCK_RESULTS / times.length - BAR_WIDTH);
 
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-  ctx.fillRect(INITIAL_X_BLOCK_RESULTS + OFFSET_X, INITIAL_Y_BLOCK_RESULTS + OFFSET_Y, WIDTH_BLOCK_RESULTS, HEIGHT_BLOCK_RESULTS);
+  drawRect(INITIAL_X_BLOCK_RESULTS, INITIAL_Y_BLOCK_RESULTS, WIDTH_BLOCK_RESULTS, HEIGHT_BLOCK_RESULTS, 'rgb(255, 255, 255)', OFFSET, OFFSET, 'rgba(0, 0, 0, 0.7)');
 
-  ctx.fillStyle = 'rgb(255, 255, 255)';
-  ctx.fillRect(INITIAL_X_BLOCK_RESULTS, INITIAL_Y_BLOCK_RESULTS, WIDTH_BLOCK_RESULTS, HEIGHT_BLOCK_RESULTS);
+  drawText('Ура вы победили!', INITIAL_X_TEXT, INITIAL_Y_TEXT, FONT_COLOR, FONT_STYLE);
+  drawText('Список результатов:', INITIAL_X_TEXT, INITIAL_Y_TEXT + LINE_HEIGHT, FONT_COLOR, FONT_STYLE);
 
-  ctx.fillStyle = '#222222';
-  ctx.font = '16px PT Mono';
-  ctx.fillText('Ура вы победили!', INITIAL_X_TEXT, INITIAL_Y_TEXT);
-  ctx.fillText('Список результатов:', INITIAL_X_TEXT, INITIAL_Y_TEXT + LINE_HEIGHT);
+  for (var i = 0; i < times.length; i++) {
+    var colorRectangle = (names[i] === 'Вы') ?
+      'rgba(255, 0, 0, 1)' :
+      'rgba(0, 0, 255, ' + getRandomNumber(0.4, 0.9) + ')';
 
-  drawText();
-  drawRectangle();
+    drawRect(INITIAL_X + (INDENT + BAR_WIDTH) * i, INITIAL_Y + HISTOGRAM_HEIGHT, BAR_WIDTH, -(times[i] * STEP), colorRectangle);
+
+    drawText(names[i], INITIAL_X + (INDENT + BAR_WIDTH) * i, INITIAL_Y + HISTOGRAM_HEIGHT + LINE_HEIGHT, FONT_COLOR);
+    drawText(times[i].toFixed(), INITIAL_X + (INDENT + BAR_WIDTH) * i, INITIAL_Y + HISTOGRAM_HEIGHT - times[i] * STEP - LINE_HEIGHT / 2, FONT_COLOR);
+  }
 };
