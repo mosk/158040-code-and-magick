@@ -24,7 +24,7 @@ window.renderStatistics = function (ctx, names, times) {
 
   function getRandomNumber(min, max) {
     return Math.random() * (max - min) + min;
-  };
+  }
 
   function drawRect(initialX, initialY, width, height, rectColor, shadowOffsetX, shadowOffsetY, shadowColor) {
     ctx.fillStyle = shadowColor;
@@ -32,13 +32,13 @@ window.renderStatistics = function (ctx, names, times) {
 
     ctx.fillStyle = rectColor;
     ctx.fillRect(initialX, initialY, width, height);
-  };
+  }
 
   function drawText(text, initialX, initialY, color, font) {
     ctx.fillStyle = color;
     ctx.font = font;
     ctx.fillText(text, initialX, initialY);
-  };
+  }
 
   function getMaxInArray(arrayName) {
     var max = -1;
@@ -50,7 +50,7 @@ window.renderStatistics = function (ctx, names, times) {
     }
 
     return max;
-  };
+  }
 
   drawRect(INITIAL_X_BLOCK_RESULTS, INITIAL_Y_BLOCK_RESULTS, WIDTH_BLOCK_RESULTS, HEIGHT_BLOCK_RESULTS, 'rgb(255, 255, 255)', OFFSET, OFFSET, 'rgba(0, 0, 0, 0.7)');
 
