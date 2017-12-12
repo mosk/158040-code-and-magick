@@ -64,8 +64,8 @@ function renderWizards(array) {
   for (var i = 0; i < array.length; i++) {
     fragment.appendChild(renderWizard(array[i], similarWizardTemplate.cloneNode(true)));
   }
+
+  return fragment;
 }
 
-renderWizards(wizards);
-
-similarWizardsList.appendChild(fragment);
+similarWizardsList.appendChild(renderWizards(wizards));
