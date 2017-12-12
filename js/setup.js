@@ -8,8 +8,6 @@ var userWindowSimilar = document.querySelector('.setup-similar');
 var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 var similarWizardsList = document.querySelector('.setup-similar-list');
 
-var fragment = document.createDocumentFragment();
-
 function createWizard() {
   var WIZARD_DATA = {
     names: ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон', 'Джон', 'Томми', 'Сильвестр', 'Марлон', 'Дэвид', 'Михаил', 'Александр'],
@@ -57,6 +55,8 @@ userWindow.classList.remove('hidden');
 userWindowSimilar.classList.remove('hidden');
 
 function renderWizards(array) {
+  var fragment = document.createDocumentFragment();
+
   for (var i = 0; i < array.length; i++) {
     fragment.appendChild(renderWizard(array[i], similarWizardTemplate.cloneNode(true)));
   }
